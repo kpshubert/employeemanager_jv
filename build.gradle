@@ -1,0 +1,43 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.kpshubert'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	// Microsoft JDBC Driver (Requires native sqljdbc_auth.dll for Windows Auth)
+	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+	// Optional: jTDS driver as an alternative for Windows/Domain auth
+	// runtimeOnly 'net.sourceforge.jtds:jtds:1.3.1'
+
+	// Windows Authentication Native Library (Match version to your mssql-jdbc version)
+	// Note: Use 'x64' for 64-bit systems or 'x86' for 32-bit systems
+	//runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc_auth:13.4.0.x64'
+
+	//implementation 'com.microsoft.sqlserver:mssql-jdbc_auth:13.2.1.x64'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
