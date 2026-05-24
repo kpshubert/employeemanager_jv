@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/Department")
 public class DepartmentController {
 
@@ -27,19 +28,19 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Department> getItemById(@PathVariable Long id) {
+    public ResponseEntity<Department> getDepartmentById(@PathVariable Long id) {
         return departmentRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Department createItem(@RequestBody Department newDepartment) {
+    public Department createDepartment(@RequestBody Department newDepartment) {
         return departmentRepository.save(newDepartment);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Department> updateItem(@PathVariable Long id, @RequestBody Department updatedDepartment) {
+    public ResponseEntity<Department> updateDepartment(@PathVariable Long id, @RequestBody Department updatedDepartment) {
         return departmentRepository.findById(id)
                 .map(department -> {
                     department.setName(updatedDepartment.getName());
