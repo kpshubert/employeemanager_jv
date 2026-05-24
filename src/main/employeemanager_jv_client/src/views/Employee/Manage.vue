@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Employee } from '../../Types/Employee';
+import type { Department } from '../../Types/Department';
 
 const employees = ref<Employee[]>([]);
-const formData = ref<Employee>({ FirstName: '', LastName: '', Phone: '', Email: '' });
+const departments = ref<Department>([]);
+const formData = ref<Employee>({ FirstName: '', LastName: '', Phone: '', Email: '', Department: { Name: '', Id: '' } });
 const isEditMode = ref(false);
 const editingId = ref<number | null>(null);
 
@@ -13,6 +15,8 @@ const fetchEmployees = async () => {
   try {
     const response = await axios.get('http://localhost:8080/api/Employee');
     employees.value = response.data;
+    const departmentResponse = await axios.get('http://localhost:8080/api/Department');
+    departments.value = departmentResponse.data;
   } catch (error) {
     console.error('Error fetching employees:', error);
   }
@@ -48,7 +52,7 @@ const deleteEmployee = async (id: number) => {
 
 // Reset Form
 const resetForm = () => {
-  formData.value = { FirstName: '', LastName: '', Phone: '', Email: '' };
+  formData.value = { FirstName: '', LastName: '', Phone: '', Email: '', Department: { Name: '', Id:'' } };
   isEditMode.value = false;
   editingId.value = null;
 };
@@ -82,6 +86,15 @@ onMounted(fetchEmployees);
           <input class="form-control" v-model="formData.Email" placeholder="Email Address" required />
         </div>
       </div>
+      <div class="row mb-3">>
+        <div class="col=md-4">
+          <label class="form-label">Department</label>
+          <select class="form-select" v-model="formData.Department.Id">
+            <option value="">--Select a Department--</option>
+            <option v-for="department in departments" :key="departments.Id" :value="department.Id">{{department.Name}}</option>
+          </select>
+z       </div>
+      </div>
       <div class="row mb-3">
         <div class="col-md-12">
           <button class="btn btn-sm btn-success" type="submit"><font-awesome-icon v-if=isEditMode :icon="['fas', 'save']" /><font-awesome-icon v-else :icon="['fas', 'plus-square']" />&nbsp;{{ isEditMode ? 'Update' : 'Add' }}</button>
@@ -108,6 +121,9 @@ onMounted(fetchEmployees);
           <th>
             Email
           </th>
+          <th>
+            Department
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -130,6 +146,9 @@ onMounted(fetchEmployees);
           </td>
           <td>
             {{ employee.Email}}
+          </td>
+          <td>
+            {{ employee.Department.Name}}
           </td>
         </tr>
       </tbody>

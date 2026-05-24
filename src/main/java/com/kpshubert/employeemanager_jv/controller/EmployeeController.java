@@ -17,30 +17,31 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @GetMapping
-    public List<Employee> getAllItems() {
+    public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getItemById(@PathVariable Long id) {
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         return employeeRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Employee createItem(@RequestBody Employee newEmployee) {
+    public Employee createEmployee(@RequestBody Employee newEmployee) {
         return employeeRepository.save(newEmployee);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateItem(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
         return employeeRepository.findById(id)
                 .map(employee -> {
                     employee.setFirstName(updatedEmployee.getFirstName());
                     employee.setLastName(updatedEmployee.getLastName());
                     employee.setPhone(updatedEmployee.getPhone());
                     employee.setEmail(updatedEmployee.getEmail());
+                    employee.setDepartment(updatedEmployee.getDepartment());
                     return ResponseEntity.ok(employeeRepository.save(employee));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
