@@ -40,7 +40,7 @@ const saveEmployee = async () => {
 // Edit Employee
 const editEmployee = (employee: Employee) => {
   formData.value = { ...employee };
-  editingId.value = employee.id ?? null;
+  editingId.value = employee.Id ?? null;
   isEditMode.value = true;
 };
 
@@ -127,11 +127,11 @@ z       </div>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="employee in employees" :key="employee.id">
+        <tr v-for="employee in employees" :key="employee.Id">
           <td>
             <div class="row">
               <div class="col-md-12">
-                <button class="btn btn-sm btn-success" @click="editEmployee(employee)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button class="btn  btn-sm btn-danger" @click="deleteEmployee(employee.id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
+                <button class="btn btn-sm btn-success" @click="editEmployee(employee)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button class="btn  btn-sm btn-danger" @click="deleteEmployee(employee.Id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
               </div>
             </div>
           </td>
@@ -154,4 +154,4 @@ z       </div>
       </tbody>
     </table>
   </div>
-</template>
+</template>S
