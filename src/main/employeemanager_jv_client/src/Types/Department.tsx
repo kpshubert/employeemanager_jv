@@ -2,4 +2,5 @@
 export interface Department {
   Id: number;
   Name: string;
+  EmployeeCount: number;
 }
