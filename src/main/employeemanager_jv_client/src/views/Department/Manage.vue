@@ -86,6 +86,9 @@ onMounted(fetchDepartments);
           <th>
             Department Name
           </th>
+          <th>
+            Employee Count
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -93,12 +96,15 @@ onMounted(fetchDepartments);
           <td>
             <div class="row">
               <div class="col-md-12">
-                <button class="btn btn-sm btn-success" @click="editDepartment(department)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button class="btn  btn-sm btn-danger" @click="deleteDepartment(department.Id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
+                <button class="btn btn-sm btn-success" @click="editDepartment(department)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button v-if="department.EmployeeCount == 0" class="btn btn-sm btn-danger" @click="deleteDepartment(department.Id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
               </div>
             </div>
           </td>
           <td>
             {{ department.Name }}
+          </td>
+          <td>
+            {{ department.EmployeeCount }}
           </td>
         </tr>
       </tbody>

@@ -11,6 +11,9 @@ public class Department {
 
     private String Name;
 
+    @Transient
+    private Integer EmployeeCount;
+
     public Department() {
     }
 
@@ -27,6 +30,8 @@ public class Department {
         return Name;
     }
 
+    public Integer getEmployeeCount() { return EmployeeCount; }
+
     public void setId(Integer Id) {
         this.Id = Id;
     }
@@ -34,4 +39,6 @@ public class Department {
     public void setName(String NameIn) {
         this.Name = NameIn;
     }
+
+    public void setEmployeeCount(Integer EmployeeCountIn) { this.EmployeeCount = EmployeeCountIn; }
 }
