@@ -24,8 +24,6 @@ const app = createApp(App)
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 
-app.component('font-awesome-icon', FontAwesomeIcon);
-
 app.use(router)
 app.use(createBootstrap())
 

@@ -2,20 +2,23 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Department } from '../../Types/Department';
+import httpClient from '../../utils/httpClient'; // Adjust path as needed
+import { useLoading } from 'vue3-loading-overlay';
+import '../../../node_modules/vue3-loading-overlay/dist/vue3-loading-overlay.css';
 
 const departments = ref<Department[]>([]);
 const formData = ref<Department>({ Name: '' });
 const isEditMode = ref(false);
 const editingId = ref<number | null>(null);
+const error = ref<Error | null>(null);
 
-// Fetch all Departments
 const fetchDepartments = async () => {
-
   try {
-    const response = await axios.get('http://localhost:8080/api/Department');
+    // Use the custom axios instance
+    const response = await httpClient.get('/Department');
     departments.value = response.data;
-  } catch (error) {
-    console.error('Error fetching departments:', error);
+  } catch (err) {
+    error.value = err as Error;
   }
 };
 
@@ -58,56 +61,73 @@ onMounted(fetchDepartments);
 </script>
 
 <template>
-  <div>
-    <h1>Manage Departments</h1>
+  <!-- Use 'vld-parent' or 'vl-parent' class if not using fullPage -->
+  <div ref="formContainer" class="vld-parent">
 
-    <!-- Form for Add/Edit -->
-    <form class="border border-primary border-1 p-1 rounded" @submit.prevent="saveDepartment">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label">Department Name</label>
-          <input class="form-control" v-model="formData.Name" placeholder="Department Name" required />
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <button class="btn btn-sm btn-success" type="submit"><font-awesome-icon v-if=isEditMode :icon="['fas', 'save']" /><font-awesome-icon v-else :icon="['fas', 'plus-square']" />&nbsp;{{ isEditMode ? 'Update' : 'Add' }}</button>
-          <button v-if="isEditMode" class="btn btn-sm btn-danger" type="button" @click="resetForm"><font-awesome-icon :icon="['fas', 'ban']" />&nbsp;Cancel</button>
-        </div>
-      </div>
-    </form>
+    <!-- Optional: Component-based approach for simple toggles -->
+    <Loading
+      :active="isLoading"
+      :can-cancel="true"
+      :on-cancel="() => isLoading = false"
+      :is-full-page="fullPage"
+    />
+  </div>
+    <div>
+      <h1>Manage Departments</h1>
 
-    <!-- List -->
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>
-          </th>
-          <th>
-            Department Name
-          </th>
-          <th>
-            Employee Count
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="department in departments" :key="department.id">
-          <td>
-            <div class="row">
-              <div class="col-md-12">
-                <button class="btn btn-sm btn-success" @click="editDepartment(department)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button v-if="department.EmployeeCount == 0" class="btn btn-sm btn-danger" @click="deleteDepartment(department.Id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
-              </div>
-            </div>
-          </td>
-          <td>
-            {{ department.Name }}
-          </td>
-          <td>
-            {{ department.EmployeeCount }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Form for Add/Edit -->
+      <form class="border border-primary border-1 p-1 rounded" @submit.prevent="saveDepartment">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Department Name</label>
+            <input class="form-control" v-model="formData.Name" placeholder="Department Name" required />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <button class="btn btn-sm btn-success" type="submit"><font-awesome-icon v-if=isEditMode :icon="['fas', 'save']" /><font-awesome-icon v-else :icon="['fas', 'plus-square']" />&nbsp;{{ isEditMode ? 'Update' : 'Add' }}</button>
+            <button v-if="isEditMode" class="btn btn-sm btn-danger" type="button" @click="resetForm"><font-awesome-icon :icon="['fas', 'ban']" />&nbsp;Cancel</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- List -->
+      <div v-if="departments.length > 0">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>
+              </th>
+              <th>
+                Department Name
+              </th>
+              <th>
+                Employee Count
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="department in departments" :key="department.id">
+              <td>
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-sm btn-success" @click="editDepartment(department)"><font-awesome-icon :icon="['fas', 'edit']"/></button><button v-if="department.EmployeeCount == 0" class="btn btn-sm btn-danger" @click="deleteDepartment(department.Id!)"><font-awesome-icon :icon="['fas', 'trash']" /></button>
+                  </div>
+                </div>
+              </td>
+              <td>
+                {{ department.Name }}
+              </td>
+              <td>
+                {{ department.EmployeeCount }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Optional: Fallback UI if needed, though overlay covers the screen -->
+      <div v-else-if="error">
+        Error: {{ error.message }}
+      </div>
   </div>
 </template>
