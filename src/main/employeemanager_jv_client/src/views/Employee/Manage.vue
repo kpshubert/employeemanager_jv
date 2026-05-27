@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Employee } from '../../Types/Employee';
 import type { Department } from '../../Types/Department';
+import httpClient from '../../utils/httpClient'; // Adjust path as needed
+import { useLoading } from 'vue3-loading-overlay';
+import '../../../node_modules/vue3-loading-overlay/dist/vue3-loading-overlay.css';
 
 const employees = ref<Employee[]>([]);
 const departments = ref<Department>([]);
@@ -13,12 +16,13 @@ const editingId = ref<number | null>(null);
 // Fetch all Employees
 const fetchEmployees = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/Employee');
+    // Use the custom axios instance
+    const response = await httpClient.get('/Employee');
     employees.value = response.data;
-    const departmentResponse = await axios.get('http://localhost:8080/api/Department');
+    const departmentResponse = await httpClient.get('/Department');
     departments.value = departmentResponse.data;
-  } catch (error) {
-    console.error('Error fetching employees:', error);
+  } catch (err) {
+    error.value = err as Error;
   }
 };
 
@@ -61,6 +65,17 @@ onMounted(fetchEmployees);
 </script>
 
 <template>
+  <!-- Use 'vld-parent' or 'vl-parent' class if not using fullPage -->
+  <div ref="formContainer" class="vld-parent">
+
+    <!-- Optional: Component-based approach for simple toggles -->
+    <Loading
+      :active="isLoading"
+      :can-cancel="true"
+      :on-cancel="() => isLoading = false"
+      :is-full-page="fullPage"
+    />
+  </div>
   <div>
     <h1>Manage Employees</h1>
 
@@ -154,4 +169,4 @@ z       </div>
       </tbody>
     </table>
   </div>
-</template>S
+</template>
