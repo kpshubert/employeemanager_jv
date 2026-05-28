@@ -83,27 +83,27 @@ onMounted(fetchEmployees);
     <form class="border border-primary border-1 p-1 rounded" @submit.prevent="saveEmployee">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">First Name</label>
+          <label class="form-label">First Name</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
           <input class="form-control" v-model="formData.FirstName" placeholder="First Name" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label">Last Name</label>
+          <label class="form-label">Last Name</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
           <input class="form-control" v-model="formData.LastName" placeholder="Last Name" required />
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">Contact Number</label>
+          <label class="form-label">Contact Number</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
           <input class="form-control" v-model="formData.Phone" placeholder="Contact Number" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label">Email</label>
+          <label class="form-label">Email</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
           <input class="form-control" v-model="formData.Email" placeholder="Email Address" required />
         </div>
       </div>
       <div class="row mb-3">>
         <div class="col=md-4">
-          <label class="form-label">Department</label>
+          <label class="form-label">Department</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
           <select class="form-select" v-model="formData.Department.Id">
             <option value="">--Select a Department--</option>
             <option v-for="department in departments" :key="departments.Id" :value="department.Id">{{department.Name}}</option>
