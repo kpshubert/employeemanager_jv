@@ -79,7 +79,7 @@ onMounted(fetchDepartments);
       <form class="border border-primary border-1 p-1 rounded" @submit.prevent="saveDepartment">
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="form-label">Department Name</label>
+            <label class="form-label">Department Name</label><font-awesome-icon class="text-danger" :icon="['fas', 'asterisk']" />
             <input class="form-control" v-model="formData.Name" placeholder="Department Name" required />
           </div>
         </div>
