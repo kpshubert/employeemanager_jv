@@ -5,6 +5,7 @@ import type { Department } from '../../Types/Department';
 import httpClient from '../../utils/httpClient'; // Adjust path as needed
 import { useLoading } from 'vue3-loading-overlay';
 import '../../../node_modules/vue3-loading-overlay/dist/vue3-loading-overlay.css';
+import { showDialog } from 'rms-vue3-confirm-dialog';
 
 const departments = ref<Department[]>([]);
 const formData = ref<Department>({ Name: '' });
@@ -44,12 +45,6 @@ const editDepartment = (department: Department) => {
   isEditMode.value = true;
 };
 
-// Delete Department
-const deleteDepartment = async (id: number) => {
-  await axios.delete(`http://localhost:8080/api/Department/${id}`);
-  await fetchDepartments();
-};
-
 // Reset Form
 const resetForm = () => {
   formData.value = { Name: '' };
@@ -57,24 +52,40 @@ const resetForm = () => {
   editingId.value = null;
 };
 
+const deleteDepartment = async (id: number) => {
+  try {
+    // showDialog returns a Promise<boolean>
+    // Resolves to true if user clicks Confirm, null/false if Cancel/Close
+    const result = await showDialog({
+      title: 'Are you sure?',
+      message: 'Do you really want to delete this department?',
+      btnConfirmText: 'Yes, Proceed',
+      btnCancelText: 'Cancel',
+      btnConfirmClasses: 'is-success',
+      btnCancelClasses: 'is-danger'
+    });
+
+    if (result === true) {
+      console.log('User confirmed the action.');
+      // Proceed with your logic here
+      await axios.delete(`http://localhost:8080/api/Department/${id}`);
+      await fetchDepartments();
+    } else {
+      console.log('User canceled the action.');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
 onMounted(fetchDepartments);
+
 </script>
 
 <template>
   <!-- Use 'vld-parent' or 'vl-parent' class if not using fullPage -->
-  <div ref="formContainer" class="vld-parent">
-
-    <!-- Optional: Component-based approach for simple toggles -->
-    <Loading
-      :active="isLoading"
-      :can-cancel="true"
-      :on-cancel="() => isLoading = false"
-      :is-full-page="fullPage"
-    />
-  </div>
     <div>
       <h1>Manage Departments</h1>
-
       <!-- Form for Add/Edit -->
       <form class="border border-primary border-1 p-1 rounded" @submit.prevent="saveDepartment">
         <div class="row mb-3">
