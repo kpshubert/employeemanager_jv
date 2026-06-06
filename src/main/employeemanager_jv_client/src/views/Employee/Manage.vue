@@ -8,6 +8,7 @@ import { useLoading } from 'vue3-loading-overlay';
 import '../../../node_modules/vue3-loading-overlay/dist/vue3-loading-overlay.css';
 import PhoneInput from 'base-vue-phone-input';
 import { Input } from '@/components/ui/input'
+import { showDialog } from 'rms-vue3-confirm-dialog';
 
 const employees = ref<Employee[]>([]);
 const departments = ref<Department>([]);
@@ -57,12 +58,6 @@ const editEmployee = (employee: Employee) => {
   isEditMode.value = true;
 };
 
-// Delete Employee
-const deleteEmployee = async (id: number) => {
-  await axios.delete(`http://localhost:8080/api/Employee/${id}`);
-  await fetchEmployees();
-};
-
 // Reset Form
 const resetForm = () => {
   formData.value = { FirstName: '', LastName: '', Phone: '', Email: '', Department: { Name: '', Id:'' }};
@@ -78,6 +73,32 @@ const handlePhoneUpdate = (result: Results) => {
   console.log('E164 Format:', result.e164)
   console.log('National Number:', result.nationalNumber)
 }
+
+const deleteEmployee = async (id: number) => {
+  try {
+    // showDialog returns a Promise<boolean>
+    // Resolves to true if user clicks Confirm, null/false if Cancel/Close
+    const result = await showDialog({
+      title: 'Are you sure?',
+      message: 'Do you really want to delete this employee?',
+      btnConfirmText: 'Yes, Proceed',
+      btnCancelText: 'Cancel',
+      btnConfirmClasses: 'is-success',
+      btnCancelClasses: 'is-danger'
+    });
+
+    if (result === true) {
+      console.log('User confirmed the action.');
+      // Proceed with your logic here
+      await axios.delete(`http://localhost:8080/api/Employee/${id}`);
+      await fetchEmployees();
+    } else {
+      console.log('User canceled the action.');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
 
 onMounted(fetchEmployees);
 </script>

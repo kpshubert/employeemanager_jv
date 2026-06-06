@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-</script>
+import 'bulma/css/bulma.min.css';
+import 'rms-vue3-confirm-dialog/dist/rms-vue3-confirm-dialog.css';
+import { showDialog } from 'rms-vue3-confirm-dialog';</script>
 
 <template>
-  <nav>
+    <nav>
     <div class="row">
       <div class="col-md-2">
         <RouterLink class="nav-link p-1 rounded"" to="/">Home</RouterLink>
@@ -20,4 +22,4 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </nav>
   <RouterView />
-</template>S
+</template>
